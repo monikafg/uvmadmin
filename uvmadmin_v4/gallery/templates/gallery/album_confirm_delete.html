@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load core_tags %}                    <!-- Cargamos los templatetags -->
+
+{% block title %}Eliminar álbum{% endblock %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Álbum: {{album.title}}</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Álbum</li>
+                    <li class="breadcrumb-item active">Eliminar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL -->
+    <div class="card">
+
+      <!-- MENÚ -->
+      <h5 class="card-header text-white bg-dark">  
+        {% if request.user.is_active %}
+          {% include 'gallery/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- FORMULARIO --> 
+      <div class="card-body">
+          <form action="" method="post">{% csrf_token %}
+            <h5 class="card-title mt-2 mb-3">
+              ¿Está seguro de querer borrar el álbum: <b>"{{ object }}"</b>?
+            </h5>
+
+            <div class="card" style="width: 50%;">
+                {% get_galeria_noticias album.id as noticias %}                 
+                {% if noticias.count %}
+                  <h5 class="card-header text-white bg-dark">Noticias relacionadas</h5>
+                  <ul class="list-group mb-4">
+                    {% for noticia in noticias %}
+                      <li class="list-group-item list-group-item-danger">
+                        <a href="{% url 'noticias:noticia' noticia.id noticia.title|slugify %}">
+                            {{noticia.id|stringformat:"04d"}}
+                        </a>
+                        - {{noticia.title}}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <h5 class="card-title text-center mb-3">No tiene noticias relacionadas</h5>
+                {% endif %}
+            </div>
+
+            <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar el álbum" />
+            <a class="btn btn-secondary btn-block" href="{% url 'gallery:album_list' %}">Cancelar</a>
+          </form>
+
+      </div>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Borrar {{organizador.tipo_organizador}}{% endblock %}
+{% block content %}
+
+  <div class="card">
+
+    <!-- MENÚ -->
+    <h5 class="card-header text-white bg-dark">  
+      {% if request.user.is_active %}
+        {% include 'universidad/includes/_menu.html'%}
+      {% endif %}
+    </h5>
+
+    <!-- DETALLE --> 
+    <div class="card-body">
+        <form action="" method="post">{% csrf_token %}
+          <h5 class="card-title mt-5 mb-5">
+            ¿Está seguro de querer borrar este {{organizador.tipo_organizador}}?
+          </h5>
+          
+          <div class="form-row" style="text-align:center">
+
+            <div class="card" style="width: 25%;">
+              {% if organizador.logo %}
+                <img class="card-img-top" src="{{organizador.logo.url}}" alt="Imagen de Perfil">
+              {% else %}                    
+                <img class="card-img-top" src="{% static 'registration/img/img_avatar_woman.png' %}" alt="Imagen de Perfil">
+              {% endif %}
+              
+              <div class="card-body">
+                <h5 class="card-title">{{organizador.nombre}}</h5>
+                <p class="card-text">{{organizador.web}} </p>
+
+                <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar este {{organizador.tipo_organizador}}" />
+                <a class="btn btn-secondary btn-block" href="{% url 'universidad:organizadores' %}">Cancelar</a>
+              </div>
+            </div>       
+
+          </div>
+
+        </form>
+
+    </div>
+  </div>
+
+
+
+{% endblock %}

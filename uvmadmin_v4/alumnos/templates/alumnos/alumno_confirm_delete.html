@@ -1,0 +1,69 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Borrar alumno{% endblock %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Alumnos</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Alumnos</li>
+                    <li class="breadcrumb-item active">Eliminar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL -->
+    <div class="card">
+
+      <!-- MENÚ  -->
+      <h5 class="card-header text-white bg-dark">  
+        {% if request.user.is_active %}
+          {% include 'alumnos/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- DETALLE DE LA NOTICIA --> 
+      <div class="card-body">
+          <form action="" method="post">{% csrf_token %}
+            <h5 class="card-title mt-5 mb-5">
+              ¿Está seguro de querer borrar este alumno"</b>?
+            </h5>
+
+              <div class="form-row" style="text-align:center">
+
+                <div class="card" style="width: 18rem;">
+                  {% if alumno.foto %}
+                    <img class="card-img-top" src="{{alumno.foto.url}}" alt="Imagen de Perfil">
+                  {% else %}                    
+                      {% if alumno.genero == 'M' %}
+                        <img class="card-img-top" src="{% static 'registration/img/img_avatar_man.png' %}" alt="Imagen de Perfil">
+                      {% else %}
+                        <img class="card-img-top" src="{% static 'registration/img/img_avatar_woman.png' %}" alt="Imagen de Perfil">
+                      {% endif %}
+                  {% endif %}
+
+                  
+                  <div class="card-body">
+                    <h5 class="card-title">{{alumno.documento}}</h5>
+                    <p class="card-text">{{alumno.nombre}} {{alumno.apellido1}} {{alumno.apellido2}} </p>
+
+                    <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar este alumno" />
+                    <a class="btn btn-secondary btn-block" href="{% url 'alumnos:alumnos' %}">Cancelar</a>
+                  </div>
+                </div>       
+
+              </div>
+          </form>
+
+      </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,249 @@
+{% extends 'core/base.html' %}          <!-- Cargamos el código html común -->
+{% load static %}                       <!-- Cargamos los ficheros estáticos -->
+{% load alumnos_tags %}                <!-- Cargamos los templatetags de ponentes -->
+
+{% block title %}{{ponente.nombre}}{% endblock %}
+
+{% block libreriasCSS %}
+{% endblock %}
+
+{% block content %}
+    
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Ponentes</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Ponentes</li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETALLE -->
+    <div class="card">
+        <!-- Menú -->
+        <h5 class="card-header text-white bg-dark">
+          {% if request.user.is_active %}
+            {% include 'ponentes/includes/_menu.html'%}
+          {% endif %}        
+        </h5>
+        
+        <!-- Detalle -->
+        <div class="card-body">
+            
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active text-uppercase" data-toggle="tab" href="#tabDetalle" role="tab" aria-controls="home" aria-selected="true">
+                    {{ponente.nombre}} {{ponente.apellido1}}
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabInfo" role="tab" aria-controls="profile" aria-selected="false">
+                    INFORMACIÓN PROFESIONAL
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabMaterias" role="tab" aria-controls="profile" aria-selected="false">
+                    MATERIAS
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabPonencias" role="tab" aria-controls="profile" aria-selected="false">
+                    PONENCIAS
+                  </a>
+                </li>
+            </ul>
+
+            <!-- Contenido de los TABS -->
+            <div class="tab-content" id="myTabContent">
+              
+              <!-- Detalle del Ponente -->
+              <div class="tab-pane fade show active ml-2" id="tabDetalle" role="tabpanel">  
+
+                <div class="row mt-2">
+                  <!-- Avatar -->
+                  <div class="column col-md-2">
+                      {% if ponente.foto %}
+                        <img src="{{ponente.foto.url}}" class="img-fluid mt-2">                  
+                      {% else %}                    
+                          {% if ponente.genero == 'M' %}
+                              <img src="{% static 'registration/img/img_avatar_man.png' %}" class="img-fluid mt-2"> 
+                          {% else %}
+                              <img src="{% static 'registration/img/img_avatar_woman.png' %}" class="img-fluid mt-2">                             
+                          {% endif %}
+                      {% endif %}
+                  </div>  
+                  <div class="form-group col-md-5">
+                    <h5 class="card-title mt-2">{{ponente.documento}} - {{ponente.get_fullname}}</h5>
+                    <p><strong>Género:</strong> {% if ponente.genero == "M" %} Masculino {% else %} Femenino {% endif %} </p>
+                    <p><strong>Nacimiento:</strong> {% if ponente.nacimiento %} {{ ponente.nacimiento }} {% endif %} </p> 
+                    <p><strong>Es Residente:</strong> {% if ponente.residente %} Si {% else %} No {% endif %}</p>
+                    <p></p>
+                  </div>
+                </div>  
+
+                <hr>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <h5 class="card-title">Dirección</h5>
+                        <p class="card-text text-left"><strong>Pais:</strong> {{ ponente.pais.des_pais }}</p>
+                        <p class="card-text text-left"><strong>Provincia:</strong> {{ ponente.provincia.des_provincia }}</p>
+                        <p class="card-text text-left"><strong>Municipio:</strong> {{ ponente.des_municipio }}</p>
+                        <p class="card-text text-left"><strong>Dirección:</strong> {{ ponente.direccion }}</p>
+                        <p class="card-text text-left"><strong>Código Postal:</strong> {{ ponente.cod_postal }}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <h5 class="card-title text-center">Contacto</h5>
+                        <p class="card-text text-left"><i class="fas fa-phone"></i> {{ponente.telefono1}}</p>
+                        <p class="card-text text-left"><i class="fas fa-phone"></i> {{ponente.telefono2}}</p>
+                        <p class="card-text text-left"><i class="fas fa-at"></i> {{ponente.email1}}</p>
+                        <p class="card-text text-left"><i class="fas fa-at"></i> {{ponente.email2}}</p>
+                        <p class="card-text text-left"><strong>Recibir Mail:</strong> {% if ponente.recibirmail %} Si {% else %} No {% endif %}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Información Profesional -->
+              <div class="tab-pane fade ml-2" id="tabInfo" role="tabpanel">
+                <h5 class="section-heading mb-4 mt-4">Cargo</h5>
+                <div class="card bg-light mt-3">                    
+                    <div class="card-body">
+                        <p class="card-text">{{ponente.cargo|safe}}</p>
+                    </div>
+                </div>                
+
+                <h5 class="section-heading mb-4 mt-4">Sitio Web</h5>
+                <a href="{{ponente.web}}" target="_blank">{{ponente.web}}</a>
+
+                <h5 class="section-heading mb-4 mt-4">Curriculum Vitae</h5>
+                {% if ponente.curriculum %}
+                  <a class="btn btn-info" href="{{ponente.curriculum.url}}" target="_blank" role="button">
+                    <i class="fas fa-file-pdf"></i> Documento Adjunto
+                  </a>
+                {% endif %}
+
+              </div>
+
+              <!-- Materias -->
+              <div class="tab-pane fade ml-2" id="tabMaterias" role="tabpanel">
+
+                <div class="row mt-3">
+                    <div class="col-md-6 col-lg-6 col-xl-6">
+                        <div class="card">
+                            <h6 class="card-header text-white bg-success">Cursos</h6>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Código</th>
+                                        <th scope="col">Denominación</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% get_ponente_materias ponente.id 1 as cursos %}                        
+                                        {% for curso in cursos %}
+                                          <tr>
+                                              <th scope="row"><a href="{% url 'materias:materia' curso.id %}">
+                                                  {{curso.id|stringformat:'04d'}}</a>
+                                              </th>
+                                              <td>{{curso.denominacion}}</td>
+                                          </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 col-xl-6">            
+                        <div class="card">
+                            <h6 class="card-header text-white bg-info">Talleres</h6>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Código</th>
+                                        <th scope="col">Denominación</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% get_ponente_materias ponente.id 2 as cursos %}                        
+                                        {% for curso in cursos %}
+                                          <tr>
+                                              <th scope="row"><a href="{% url 'materias:materia' curso.id %}">
+                                                  {{curso.id|stringformat:'04d'}}</a>
+                                              </th>
+                                              <td>{{curso.denominacion}}</td>
+                                          </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+              </div>
+
+              <!-- Ponencias -->
+              <div class="tab-pane fade ml-2" id="tabPonencias" role="tabpanel">
+
+                <div class="row mt-3">
+                    <div class="col-md-12 col-lg-12 col-xl-12">
+                        <table id="iddatatable" class="table table-hover table-condensed table-bordered">
+                            <thead style="background-color: #eeeeee; color: black; font-weight: bold; ">
+                            <tr>
+                                <th>Ponencia</th>
+                                <th>Materia</th>
+                                <th>Fichero</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% get_ponente_ponencias ponente.id as ponencias %}                        
+                                {% for ponencia in ponencias %}
+                                    <tr>
+                                        <td>{{ponencia.denominacion}}</td>
+                                        <td>{{ponencia.materia}}</td>
+                                        <td>{{ponencia.fecha|date:'d/m/Y'}}</td>                                
+                                        <td>{{ponencia.hinicio}}</td>                                
+                                        <td>{{ponencia.hfin}}</td>                                
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> 
+                    </div>
+                </div>
+
+              </div>
+
+            </div>
+
+        </div>
+
+
+    </div>  
+
+{% endblock %}
+
+
+{% block extrascripts %} 
+{% endblock extrascripts %}

@@ -1,0 +1,99 @@
+{% extends 'core/base.html' %}          <!-- Cargamos el código html común -->
+{% load static %}                       <!-- Cargamos los ficheros estáticos -->
+ 
+{% block title %}Matrículas{% endblock %}
+
+<!-- Librerías CSS - Específicas para esta página -->
+{% block libreriasCSS %}  
+    <link rel="stylesheet" href="{% static 'core/terceros/datatable/dataTables.bootstrap4.min.css' %}">
+{% endblock libreriasCSS %}
+
+<!-- Contenido principal -->
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Matrículas</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Matrículas</li>
+                    <li class="breadcrumb-item active">Listado</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>   
+
+    <!-- PANEL -->
+    <div class="card">
+        <h5 class="card-header text-white bg-dark"> 
+            <a href="{% url 'matriculas:crear' %}" class="btn btn-primary" role="button">Agregar Nueva Matrícula <span class="fas fa-plus-circle"></span></a>           
+        </h5>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text">
+                <table id="iddatatable" class="table table-hover table-condensed table-bordered">
+                    <thead style="background-color: #005b9f; color: white; font-weight: bold; ">
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Materia</th>
+                        <th>Alumno</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for matricula in matricula_list %}
+                            <tr>                                
+                                <th scope="col"><a href="{% url 'matriculas:matricula' matricula.id %}">{{matricula.id|stringformat:'04d'}}</a></th>
+                                <td>
+                                    <a href="{% url 'materias:materia' matricula.materia.id %}">{{matricula.materia.codigo}}</a> - {{matricula.materia}}
+                                </td>
+                                <td>
+                                    <a href="{% url 'alumnos:alumno' matricula.alumno.id %}">{{matricula.alumno.documento}}</a> - {{matricula.alumno.get_fullname}}
+                                </td>
+                                <td>{{matricula.estado}}</td>
+                                <td width="5%">
+                                  <a href="{% url 'matriculas:borrar' matricula.id %}" id="delMatricula" name="delMatricula" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash-alt fa-xs"></i>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot style="background-color: #566787; color: white; font-weight: bold;">
+                        <tr>
+                            <th>Matrícula</th>
+                            <th>Materia</th>
+                            <th>Alumno</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </tfoot>
+                </table> 
+            </p>            
+        </div>
+    </div>
+    
+    <!-- FIN PANEL LISTADO DE MATRICULAS -->
+
+
+{% endblock content %}
+
+<!-- Librerías JS - Específicas -->
+{% block extrascripts %}
+    <script src="{% static 'core/terceros/datatable/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'core/terceros/datatable/dataTables.bootstrap4.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#iddatatable').DataTable({
+                "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.10.18/i18n/Spanish.json"
+                        }
+            });
+        } );
+    </script>
+{% endblock extrascripts %}
+

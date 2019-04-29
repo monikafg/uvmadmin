@@ -1,0 +1,267 @@
+{% load static from staticfiles %}      <!--  Cargamos los ficheros estáticos -->
+{% load core_tags %}                    <!-- Cargamos los templatetags de core -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Universidad de Verano | Panel Admin">
+    <meta name="author" content="AytoSBT - https://www.maspalomas.com">
+    
+    <!-- Incluímos el título base -->
+    <title>{% block title %}{% endblock %} | UVM Administración</title> 
+
+	<!-- Favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">    
+
+    <!-- Librerías CSS Generales a todas las páginas - Dirigimos hacia la ruta de ficheros estáticos  -->
+    <link rel="stylesheet" href="{% static 'core/terceros/bootstrap/bootstrap.min.css' %}"> 
+    <link rel="stylesheet" href="{% static 'core/terceros/fontawesome/css/all.min.css' %}">   
+    <link rel="stylesheet" href="{% static 'core/css/uvmadmin.css' %}">  
+
+    {% block libreriasCSS %}{% endblock %}  <!-- Librerías CSS - Específicas -->
+    {% block libreriasJS %}{% endblock %}  <!-- Librerías JS - Específicas -->
+    {% block header %}{% endblock %}        <!-- Bloque Cabecera -->
+
+
+</head>
+
+<body class="adminbody">
+
+    <div id="main">
+
+        <!-- HEADER. Contendrá la cabecera del sitio, con su nombre y menú superior -->
+        <div class="headerbar">
+
+            <!-- LOGO -->
+            <div class="headerbar-left">
+                <a href="{% url 'core:home' %}" class="logo">
+                    <img alt="Logo" src="{% static 'core/img/UVM_logo.jpg' %}" /> 
+                    <span>AdminUVM</span>
+                </a>
+            </div>
+    
+            <nav class="navbar-custom">
+    
+                <ul class="list-inline float-right mb-0">
+                    <!-- Ayuda y Soporte -->
+                    <li class="list-inline-item dropdown notif">
+                        <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                            <i class="fa fa-fw fa-question-circle"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-arrow dropdown-arrow-success dropdown-lg">
+                            <!-- item-->
+                            <div class="dropdown-item noti-title">
+                                <h5><small>Ayuda y Soporte</small></h5>
+                            </div>
+
+                            <!-- item-->
+                            <a target="_blank" href="https://www.maspalomas.com" class="dropdown-item notify-item">                                    
+                                <p class="notify-details ml-0">
+                                    <b>¿Tienes algún problema técnico, mejora, duda?</b>
+                                    <span>Contacta con Nosotros</span>
+                                </p>
+                            </a>                              
+
+                            <!-- All-->
+                            <a title="Click para enviarnos un correo" target="_blank" href="https://www.maspalomas.com" class="dropdown-item notify-item notify-all">
+                                <i class="fa fa-link"></i> Escríbenos un correo
+                            </a>
+
+                        </div>
+                    </li>
+
+                    <!-- Usuario (foto, perfil, nuevo usuario, salir -->
+                    {% if request.user.is_authenticated %}                                
+                        <li class="list-inline-item dropdown notif">
+                            <!-- Imagen -->
+                            <a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                {% if request.user.profile.avatar %}
+                                    <img src="{{request.user.profile.avatar.url}}" alt="Imágen Perfil" class="avatar-rounded">
+                                {% else %}
+                                    <img src="{% static 'core/img/usuario.svg' %}" alt="Imágen Perfil" class="avatar-rounded">
+                                {% endif %}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right profile-dropdown ">               
+
+                                <!-- Menú del usuario -->
+                                <div class="dropdown-item noti-title">
+                                    {% if request.user.first_name %}
+                                        <h5 class="text-overflow"><small>Hola, {{request.user.first_name}}</h5>
+                                    {% else %}
+                                        <h5 class="text-overflow"><small>Hola, {{request.user.username}}</h5>
+                                    {% endif %}   
+                                </div>
+
+                                <!-- Perfil del usuario-->
+                                <a href="{% url 'profile' %}" class="dropdown-item notify-item">
+                                    <i class="fas fa-user-edit"></i> <span>Perfil</span>
+                                </a>
+
+                                <!-- Cerrar sesión del usuario-->
+                                <a href="{% url 'logout' %}" class="dropdown-item notify-item">
+                                    <i class="fas fa-sign-out-alt"></i> <span>Desconectar</span>
+                                </a>
+
+                                <!-- Si está autenticado añade "Nuevo Usuario" -->                                            
+                                {% if request.user.is_staff %} 
+                                    <a href="{% url 'signup' %}" class="dropdown-item notify-item">
+                                        <i class="fas fa-user-plus"></i> <span>Nuevo Usuario</span>
+                                    </a>
+                                {% endif %}
+
+                                <!-- item-->
+                                <a target="_blank" href="https://www.universidadveranomaspalomas.org/" class="dropdown-item notify-item">
+                                    <i class="fa fa-external-link"></i> <span>UVM</span>
+                                </a>
+                            </div>
+                        </li>
+                    {% else %}   
+                        <!-- Si no hay usuario activo, le invita a acceder -->
+                        <li class="list-inline-item dropdown notif">
+                            <a class="nav-link" href="{% url 'login' %}" role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="fa fa-fw fa-user-plus"></i> Acceder
+                            </a>
+                        </li>
+                    {% endif %}
+
+                </ul> 
+
+                <ul class="list-inline menu-left mb-0">
+                    <li class="float-left">
+                        <button class="button-menu-mobile open-left">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                    </li>                        
+                </ul>
+    
+            </nav>
+        
+        </div>
+        <!-- End Navigation -->
+
+	    <!-- Left Sidebar -->
+        {% if request.user.is_authenticated %}
+            <div class="left main-sidebar">
+        
+                <div class="sidebar-inner leftscroll">
+        
+                    <div id="sidebar-menu">
+                
+                        <ul>
+                            <!-- Panel de Control -->
+                            <li class="submenu">
+                                <a class="active" href="{% url 'core:home' %}"><i class="fa fa-fw fa-bars"></i>
+                                <span> Panel de Control </span> </a>
+                            </li>
+
+                            <!-- Alumnos -->
+                            <li class="submenu">
+                                <a href="{% url 'alumnos:alumnos' %}">
+                                    <i class="fas fa-fw fa-graduation-cap"></i><span> Alumnos </span>
+                                    <span class="label radius-circle bg-primary float-right">{% get_alumnos_count %}</span>
+                                </a>
+                            </li>
+
+                            <!-- Ponentes -->
+                            <li class="submenu">
+                                <a href="{% url 'ponentes:ponentes' %}">
+                                    <i class="fas fa-fw fa-chalkboard-teacher"></i><span> Ponentes </span>
+                                    <span class="label radius-circle bg-warning float-right">{% get_ponentes_count %}</span>
+                                </a>
+                            </li>                        
+
+                            <!-- Materias -->
+                            <li class="submenu">
+                                <a href="{% url 'materias:materias' %}">
+                                    <i class="fas fa-fw fa-book"></i><span> Materias </span>
+                                    <span class="label radius-circle bg-danger float-right">{% get_materias_count %}</span>
+                                </a>
+                            </li>
+
+                            <!-- Matrículas -->
+                            <li class="submenu">
+                                <a href="{% url 'matriculas:matriculas' %}">
+                                    <i class="fas fa-fw fa-id-card"></i><span> Matrículas </span>
+                                    <span class="label radius-circle bg-info float-right">{% get_matriculas_count %}</span>
+                                </a>
+                            </li>                        
+
+                            <!-- Noticias -->
+                            <li class="submenu">
+                                <a href="{% url 'noticias:noticias' %}">
+                                    <i class="fas fa-fw fa-newspaper"></i><span> Noticias </span>
+                                    <span class="label radius-circle bg-success float-right">{% get_noticias_count %}</span>
+                                </a>
+                            </li> 
+
+                            <!-- Galería -->
+                            <li class="submenu">
+                                <a href="{% url 'gallery:album_list' %}">
+                                    <i class="fas fa-fw fa-images"></i><span> Galería </span>     
+                                    <span class="label radius-circle bg-secondary float-right">{% get_galerias_count %}</span>
+                                                               
+                                </a>
+                            </li>
+
+                        </ul>
+        
+                        <div class="clearfix"></div>
+        
+                    </div>
+                
+                    <div class="clearfix"></div>
+        
+                </div>
+        
+            </div>
+        {% endif %}
+        <!-- End Sidebar -->
+
+        <!-- Contenedor de las páginas -->
+        <div class="content-page">	
+        
+            <!-- Contenido de las páginas -->
+            <div class="content">        
+                {% block content %}                    
+                    {% block estadisticas %}{% endblock %}      <!-- Solo aparece en la página principal -->
+                {% endblock %}
+            </div>
+
+        </div>
+
+        <!-- Pié de página -->
+        <footer class="footer">
+            <span class="text-right">
+                Copyright <a target="_blank" href="https://www.maspalomas.com">Ayuntamiento de San Bartolomé de Tirajana</a>
+            </span>
+            <span class="float-right">
+                Powered by <a target="_blank" href="{% url 'core:home' %}"><b>Departamento Nuevas Tecnologías</b></a>
+            </span>
+        </footer>
+
+    </div>
+
+    
+    <!-- Librerías JS - Generales -->
+    <script src="{% static 'core/terceros/jquery/modernizr.min.js' %}"></script>
+    <script src="{% static 'core/terceros/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'core/terceros/jquery/moment.min.js' %}"></script>
+            
+    <script src="{% static 'core/terceros/jquery/popper.min.js' %}"></script>
+    <script src="{% static 'core/terceros/bootstrap/bootstrap.min.js' %}"></script>
+    
+    <script src="{% static 'core/terceros/jquery/detect.js' %}"></script>       <!-- Controla la redimensión menú lateral -->
+    <script src="{% static 'core/terceros/jquery/fastclick.js' %}"></script>    <!-- Controla el contador -->
+    <script src="{% static 'core/terceros/jquery/jquery.blockUI.js' %}"></script>
+    <script src="{% static 'core/terceros/jquery/jquery.nicescroll.js' %}"></script>    
+
+    <script src="{% static 'core/js/uvmadmin.js' %}"></script>
+
+    {% block extrascripts %}{% endblock extrascripts %}  
+
+</body>
+
+</html>

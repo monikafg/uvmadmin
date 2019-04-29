@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Eliminar matrícula{% endblock %}
+
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Matrículas</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Matrículas</li>
+                    <li class="breadcrumb-item active">Eliminar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>   
+
+    <div class="card">
+
+      <!-- MENÚ DE ALUMNOS -->
+      <h5 class="card-header">  
+        {% if request.user.is_active %}
+          {% include 'matriculas/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- DETALLE DE LA MATRÍCULA --> 
+      <div class="card-body">
+          <form action="" method="post">{% csrf_token %}
+            <h5 class="card-title mt-2 mb-3">
+              ¿Está seguro de querer borrar esta matrícula?
+            </h5>
+
+              <div class="form-row" style="text-align:center">
+
+                <div class="card" style="width: 100%;">   
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-8 col-lg-8 col-xl-8">
+                        <h5 class="card-title text-left"><strong>Matrícula:</strong>{{matricula.id|stringformat:'04d'}}</h5>
+                        <p class="card-text text-left"><strong>Alumno:</strong>{{matricula.alumno.get_fullname}}</p>
+                        <p class="card-text text-left"><strong>Materia:</strong>{{matricula.materia}} </p>
+                        <p class="card-text text-left"><strong>Estado:</strong>{{matricula.estado}} </p>
+                        <p class="card-text text-left"><strong>Fecha Reserva:</strong>{{matricula.freserva}} </p>
+                        {% if matricula.fpago %}
+                          <p class="card-text text-left"><strong>Fecha Pago:</strong>{{matricula.fpago}} </p>
+                        {% endif %}
+                      </div>
+                      <div class="col-md-4 col-lg-4 col-xl-4">
+                        <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar esta matrícula" />
+                        <a class="btn btn-secondary btn-block" href="{% url 'matriculas:matriculas' %}">Cancelar</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>       
+
+              </div>
+
+
+          </form>
+      </div>
+
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}

@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Registro{% endblock %}
+{% block content %}
+<!-- Los errores se verán en rojo y no se verán las labels de los campos -->
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Usuario</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Usuario</li>
+                    <li class="breadcrumb-item active">Nuevo</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>.errorlist{color:red;} label{display:none}</style>
+
+    <main role="main">
+      <div class="container">
+        <div class="row mt-3">
+          <div class="col-md-9 mx-auto mb-5">
+
+            <form action="" method="post">{% csrf_token %}
+
+              <h3 class="mb-4">Registro</h3>
+
+              {{form.as_p}}
+              
+              <!-- BOTONES CANCELAR Y CREAR -->
+              <div class="row mt-5">
+                  <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                      <a href="{% url 'core:home' %}" id="cancel" name="cancel" class="btn btn-secondary">CANCELAR</a>
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                      <input type="submit"  class="btn btn-primary btn-block" value="CONFIRMAR" />
+                  </div>
+              </div>          
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+{% endblock %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}

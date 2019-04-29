@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{noticia.title}}{% endblock %}
+
+{% block libreriasCSS %}
+{% endblock libreriasCSS %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Noticias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Noticias</li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE LA NOTICIA -->
+    <div class="card">
+
+        <!-- MENÚ DE NOTICIAS -->
+        <h5 class="card-header text-white bg-dark">  
+          {% if request.user.is_active %}
+            {% include 'noticias/includes/_menu.html'%}
+          {% endif %}
+        </h5>
+
+        <!-- DETALLE DE LA NOTICIA --> 
+        <div class="card-body"> 
+            <h5 class="card-title"></h5>
+            
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#tabDetalle" role="tab" aria-controls="home" aria-selected="true">
+                    DETALLE
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabGaleria" role="tab" aria-controls="profile" aria-selected="false">
+                    GALERÍA DE FOTOS
+                  </a>
+                </li>
+            </ul>
+            
+            <!-- Contenido de los TABS -->
+            <div class="tab-content" id="myTabContent">
+
+                <!-- Detalle de la Noticia -->
+                <div class="tab-pane fade show active" id="tabDetalle" role="tabpanel">
+                  <h2 class="section-heading mb-4 mt-4">{{noticia.title}}</h2>
+                  <h3 class="section-heading mb-4">{{noticia.subject}}</h3>
+
+                  {% if noticia.image %}
+                    <img src="{{noticia.image.url}}" class="img-fluid mt-2">                  
+                  {% else %}
+                    <img src="{% static 'noticias/img/no-image.png' %}" class="img-fluid mt-2">
+                  {% endif %}
+                  <hr>
+
+                  {{noticia.content|safe}}
+
+                  {% if noticia.fichero %}
+                    <a class="btn btn-info" href="{{noticia.fichero.url}}" target="_blank" role="button">
+                      <i class="fas fa-file-pdf"></i> Documento Adjunto
+                    </a>
+                  {% endif %}
+
+                </div>
+
+                <!-- Galería de Fotos -->
+                <div class="tab-pane fade" id="tabGaleria" role="tabpanel">
+                  <!-- Galería de Fotos -->
+                  {% if noticia.galeria %}
+                    <h5 class="card-title mt-4"><strong>Galería:</strong>{{noticia.galeria}}</h5>
+                    <div class="card-columns">
+                        {% for imagen in noticia.galeria.images.all %}
+                            <div class="card">
+                              <img class="card-img-top" src="{{imagen.data.url}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+
+            </div>
+            <!-- FIN TABS -->
+        </div>
+    </div>
+
+{% endblock content %}
+
+
+{% block extrascripts %} 
+{% endblock extrascripts %}

@@ -1,0 +1,196 @@
+{% extends 'core/base.html' %}                <!-- Cargamos el código html común -->
+{% load static %}                             <!-- Cargamos los ficheros estáticos -->
+{% block title %}Nueva materia{% endblock %}  <!-- Título de la página -->
+
+{% block libreriasCSS %}
+{% endblock libreriasCSS %}
+
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Materias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Materias</li>
+                    <li class="breadcrumb-item active">Nueva</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+      <!-- COLUMNA CON DATOS DE LA MATERIA -->
+      <div class="col col-md-12">
+        
+        <!-- PANEL -->
+        <div class="card">
+          <!-- MENÚ  -->
+          <h5 class="card-header text-white bg-dark">  
+            {% if request.user.is_active %}
+              {% include 'materias/includes/_menu.html'%}
+            {% endif %}
+          </h5>
+
+          <!-- DETALLE --> 
+          <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                <!-- Usuario activo -->
+                <input type="hidden" id="{{form.user.name}}" name="{{form.user.name}}" value="{{request.user.id}}">             
+                <input type="hidden" id="{{form.edicion.name}}" name="{{form.edicion.name}}" value="18">             
+                <input type="hidden" id="{{form.importe_reducido.name}}" name="{{form.importe_reducido.name}}" value="0">             
+                <input type="hidden" id="{{form.plazas_dto_ocupadas.name}}" name="{{form.plazas_dto_ocupadas.name}}" value="0">             
+
+
+                <!-- Tipo, Código, Denominación y Activo -->
+                <div class="form-row">
+                    <div class="form-group col-md-2">{{form.tipo_materia}}</div>
+                    <div class="form-group col-md-1">{{form.codigo}}</div>
+                    <div class="form-group col-md-7">{{form.denominacion}}</div>
+                    <div class="form-group col-md-2">{{form.activo}}</div>
+                </div> 
+
+                <!-- Lugar Celebración, Inicio y Final -->
+                <div class="form-row">
+                    <div class="form-group col-md-6">{{form.lugar}}</div>
+                    <div class="form-group col-md-2">{{form.finicio}}</div>
+                    <div class="form-group col-md-2">{{form.ffin}}</div>
+                    <div class="form-group col-md-1">{{form.hinicio}}</div>
+                    <div class="form-group col-md-1">{{form.hfin}}</div>
+                </div> 
+
+                <!-- Descripción de la materia -->
+                <div class="form-row">
+                  <div class="form-group col-md-12">
+                    {{form.descripcion}}
+                  </div>
+                </div>
+
+                <!-- Ponentes -->
+                <div class="form-row">
+                  {{form.ponente}}
+                </div>
+
+                <!-- Imagen de la materia y programa -->
+                <div class="form-row mt-2">
+                  <div class="form-group col-md-6">
+                    <div class="custom-file">                      
+                        <input type="file" class="custom-file-input mb-2" accept=".pdf" 
+                            id="{{form.programa.name}}" name="{{form.programa.name}}" placeholder="{{form.programa.value}}">
+                        <label class="custom-file-label" for="{{form.programa.name}}">Seleccione Programa...</label>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <div class="custom-file">                      
+                        <input type="file" class="custom-file-input mb-2" accept=".jpg,.gif,.png" 
+                            id="{{form.imagen.name}}" name="{{form.imagen.name}}" placeholder="{{form.imagen.value}}">
+                        <label class="custom-file-label" for="{{form.imagen.name}}">Seleccione Imagen...</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dirigido, Plazas, horas y créditos -->
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                      <label for="form.dirigido.name">Dirigido a</label>
+                      {{form.dirigido}}
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="form.dirigido.name">Plazas</label>
+                      {{form.plazas}}
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="form.dirigido.name">Horas</label>
+                      {{form.horas}}
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="form.dirigido.name">Créditos</label>
+                      {{form.creditos}}
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="form.dirigido.name">Importe</label>
+                      {{form.importe}}
+                    </div>
+                </div> 
+
+                <!-- Descuento Aplicado y plazas -->
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                      <label for="form.aplica_dto.name">Aplica Descuento</label>
+                      {{form.aplica_dto}}
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="form.plazas_dto.name">Plazas Dto</label>
+                      {{form.plazas_dto}}
+                    </div>
+                    <div class="form-group col-md-2">
+                      <label for="form.otracuenta.name">{{form.otracuenta.label}}</label>
+                      {{form.otracuenta}}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="form.cuenta.name">{{form.cuenta.label}}</label>
+                      {{form.cuenta}}
+                    </div>
+                </div> 
+
+                <!-- Descuentos Aplicables -->
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="form.descuento.name">Descuentos Aplicables</label>
+                      {{form.descuento}}
+                    </div>
+                </div> 
+
+
+                <!-- Observaciones-->
+                <div class="form-row">
+                  <div class="form-group col-md-12">
+                    <p>Observaciones</p>
+                    {{form.observaciones}}
+                  </div>
+                </div>
+
+                <!-- BOTONES CANCELAR Y CREAR -->
+                <div class="row mt-5">
+                    <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                        <a href="{% url 'materias:materias' %}" id="cancel" name="cancel" class="btn btn-secondary">CANCELAR</a>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                        <input type="submit"  class="btn btn-warning btn-block" value="GRABAR" />
+                    </div>
+                </div>
+
+
+              </form>
+
+          </div>
+
+        </div>  <!-- FIN DEL CARD -->
+
+      </div> <!-- COLUMNA CON DATOS DE LA MATERIA -->
+
+    </div>
+
+
+{% endblock content %}
+
+{% block extrascripts %} 
+
+  <script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+  </script>
+
+{% endblock extrascripts %}
+

@@ -1,0 +1,155 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Actualizar alumno{% endblock %}
+
+{% block libreriasCSS %}
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Alumnos</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Alumnos</li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+  <!-- PANEL DEL ALUMNO -->
+  <div class="card">
+
+    <!-- MENÚ DE ALUMNOS -->
+    <h5 class="card-header text-white bg-dark">  
+      {% if request.user.is_active %}
+        {% include 'alumnos/includes/_menu.html'%}
+      {% endif %}
+    </h5>
+
+    <!-- DETALLE DEL ALUMNO --> 
+    <div class="card-body">
+        <h5 class="card-title"></h5>
+        <!-- Si se ha editado correctamente muestra mensaje y enlace al detalle de la noticia -->
+        {% if 'ok' in request.GET %}
+          <p class="card-text" style="color:green;">
+            Alumno editado correctamente. 
+            <a href="{% url 'alumnos:alumno' alumno.id %}">Haz clic aquí para ver el resultado</a>.
+          </p>
+        {% endif %}
+        
+        <!-- Formulario -->
+        <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}        
+
+            <div class="form-row">
+                <!-- Avatar -->
+                <div class="form-group col-md-2">
+                    {% if form.foto.value %}
+                      <img src="{{form.foto.value.url}}" class="img-fluid mt-2">                  
+                      <p class="mt-1">¿Borrar Avatar? <input type="checkbox" id="foto-clear_id" name="foto-clear" /></p>
+                    {% else %}                    
+                        {% if alumno.genero == 'M' %}
+                            <img src="{% static 'registration/img/img_avatar_man.png' %}" class="img-fluid mt-2"> 
+                        {% else %}
+                            <img src="{% static 'registration/img/img_avatar_woman.png' %}" class="img-fluid mt-2">                             
+                        {% endif %}
+
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-10">
+                    <!-- Documento y Genero -->
+                    <div class="form-row">
+                        <div class="form-group col-md-4">{{form.tipo_documento}}</div>
+                        <div class="form-group col-md-4">{{form.documento}}</div>
+                        <div class="form-group col-md-4">{{form.genero}}</div>
+                    </div>
+
+                    <!-- Nombre y Apellidos -->
+                    <div class="form-row">
+                        <div class="form-group col-md-4">{{form.nombre}}</div>
+                        <div class="form-group col-md-4">{{form.apellido1}}</div>
+                        <div class="form-group col-md-4">{{form.apellido2}}</div>
+                    </div>                        
+
+                    <!-- Selección Imagen, Fecha Nacimiento y Actividad -->
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <div class="custom-file">                      
+                                <input type="file" class="custom-file-input mb-2" accept=".jpg,.gif,.png" 
+                                    id="{{form.foto.name}}" name="{{form.foto.name}}" placeholder="{{form.foto.value}}">
+                                <label class="custom-file-label" for="{{form.foto.name}}">Seleccione Imágen de perfil...</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">{{form.nacimiento}}</div>
+                        <div class="form-group col-md-4">{{form.actividad}}</div>
+                    </div> 
+
+                </div>
+            </div>
+
+            <!-- Pais, Provincia y Municipio -->
+            <div class="form-row">
+                <div class="form-group col-md-4">{{form.pais}}</div>
+                <div class="form-group col-md-4">{{form.provincia}}</div>
+                <div class="form-group col-md-4">{{form.des_municipio}}</div>
+            </div>
+
+            <!-- Dirección y Código Postal -->
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    {{form.direccion}}
+                </div>
+                <div class="form-group col-md-4 mt-2">
+                    {{form.cod_postal}}
+                </div>
+            </div>
+
+            <!-- Emails -->
+            <div class="form-row">
+                <div class="form-group col-md-5">{{form.email1}}</div>
+                <div class="form-group col-md-5">{{form.email2}}</div>
+                <div class="form-group col-md-2">{{form.recibirmail}}</div>
+            </div>
+
+            <!-- Teléfonos, Nacimiento, Residente -->
+            <div class="form-row">
+                <div class="form-group col-md-4">{{form.telefono1}}</div>
+                <div class="form-group col-md-4">{{form.telefono2}}</div>
+                <div class="form-group col-md-4">{{form.residente}}</div>
+            </div>
+
+            <!-- BOTONES CANCELAR Y CREAR -->
+            <div class="row mt-5">
+                <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                    <a href="{% url 'alumnos:alumnos' %}" id="cancel" name="cancel" class="btn btn-secondary">CANCELAR</a>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                    <input type="submit"  class="btn btn-warning btn-block" value="GRABAR" />
+                </div>
+            </div>
+
+        </form>
+        
+
+    </div>
+  </div>
+  
+{% endblock %} 
+
+
+{% block extrascripts %} 
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+{% endblock extrascripts %}

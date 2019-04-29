@@ -1,0 +1,354 @@
+{% extends 'core/base.html' %}                <!-- Plantilla Base -->
+{% load static %}                             <!-- Ficheros Estáticos -->
+{% load materia_tags %}                       <!-- Cargamos los templatetags de materias -->
+
+{% block title %}{{materia.tipo_materia.des_materia}}: {{materia.codigo}} {% endblock %}
+
+{% block libreriasCSS %}
+{% endblock %}
+
+{% include "materias/includes/_header.html" %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Materias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Materias</li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    
+    {% include "materias/includes/_modal.html" %}
+
+    <!-- PANEL DETALLE -->
+    <div class="card {% if not materia.activo %} border-danger {% endif %}">
+        <!-- MENÚ  -->
+        <h5 class="card-header text-white bg-dark">  
+            {% if request.user.is_active %}
+                {% include 'materias/includes/_menu.html'%}
+            {% endif %}
+        </h5>
+
+        <!-- DETALLE --> 
+        <div class="card-body {% if not materia.activo %} text-danger {% endif %}">
+            <h5 class="card-title mb-4">{{materia.tipo_materia.des_materia}}: 
+                                        {{materia.get_fullname}}
+            </h5>
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#tabDetalle" role="tab" aria-controls="home" aria-selected="true">
+                    DETALLE
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabDescripcion" role="tab" aria-controls="profile" aria-selected="false">
+                    DESCRIPCIÓN
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabObservaciones" role="tab" aria-controls="profile" aria-selected="false">
+                    OBSERVACIONES
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabPonentes" role="tab" aria-controls="profile" aria-selected="false">
+                    PONENTES
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabApuntes" role="tab" aria-controls="profile" aria-selected="false">
+                    APUNTES
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabPonencias" role="tab" aria-controls="profile" aria-selected="false">
+                    PONENCIAS
+                  </a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+
+                <!-- Detalle -->
+                <div class="tab-pane fade show active" id="tabDetalle" role="tabpanel">
+                    <div class="row">
+
+                        <div class="col col-md-6">
+                            <p class="card-text ml-4 mt-4"><strong><i class="fas fa-map-marker-alt"></i></strong> {{materia.lugar}}</p>
+                            <p class="card-text ml-4"><strong><i class="fas fa-calendar-alt"></i></strong> 
+                                {{materia.finicio}} {{materia.hinicio}} - {{materia.ffin}}  {{materia.hfin}}
+                            </p>
+                            <p class="card-text ml-4 mt-4"><strong><i class="fas fa-person-booth"></i></strong> {{materia.dirigido}}</p>
+                            <hr>
+                            <!-- Horas, Plazas, Créditos e Importe -->
+                            <div class="row card-text ml-4 mt-4">
+                                <div class="col-md-3"><strong><i class="fas fa-hourglass-half"></i></strong> {{materia.horas}} horas</div>                                
+                                <div class="col-md-3"><strong><i class="fas fa-users"></i></strong> {{materia.plazas}} plazas</div>
+                                <div class="col-md-3"><strong><i class="fas fa-user-graduate"></i></strong> {{materia.creditos}} créditos</div>
+                                <div class="col-md-3"><strong><i class="fas fa-euro-sign"></i></strong> {{materia.importe}}</div>
+                            </div>
+                            <hr>
+
+                            <!-- Descuentos -->
+                            <p class="card-text ml-4 mt-4">                                
+                                {% if materia.aplica_dto %} 
+                                    <strong><i class="fas fa-users"></i></strong> 
+                                    {{materia.plazas_dto}} Plazas con descuento
+                                    {% if materia.descuento %}
+                                        <table id="iddatatable" class="table table-hover table-condensed table-bordered ml-4">
+                                            <thead style="background-color: #eeeeee; color: black; font-weight: bold; ">
+                                            <tr>
+                                                <th>Descuentos Aplicados</th>
+                                                <th>Importe</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for dto in materia.descuento.all %}
+                                                    <tr>
+                                                        <td>{{dto.descripcion}}</td>
+                                                        <td width="10%">{{dto.importe}} €</td>          
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                {% else %} 
+                                    <strong><i class="fas fa-percent"></i></strong>
+                                    No se aplica descuento
+                                {% endif %}
+                            </p>
+
+                            {% if materia.otracuenta %} 
+                                <p class="card-text ml-4 mt-4">
+                                    <strong><i class="fas fa-piggy-bank"></i></strong>Otra cuenta: {{materia.cuenta}}
+                                </p>                            
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Imágen y Programa Adjunto -->
+                        <div class="col col-md-6">
+                            {% if materia.imagen %}
+                                <p class="card-text ml-4"><img src="{{materia.imagen.url}}" class="img-fluid mt-2"></p>
+                            {% else %}
+                                <p class="card-text ml-4"><img src="{% static 'noticias/img/no-image.png' %}" class="img-fluid mt-2"></p>
+                            {% endif %}
+
+                            {% if materia.programa %}
+                            <p class="card-text ml-4">
+                                <a class="btn btn-info" href="{{materia.programa.url}}" target="_blank" role="button">
+                                <i class="fas fa-file-pdf"></i> Programa Adjunto
+                                </a>
+                            </p>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Descripción -->
+                <div class="tab-pane fade show" id="tabDescripcion" role="tabpanel">                
+                    <div class="card bg-light mt-3">                    
+                        <div class="card-body">
+                            <p class="card-text">{{materia.descripcion|safe}}</p>
+                        </div>
+                    </div>                    
+                </div>
+
+                <!-- Observaciones -->
+                <div class="tab-pane fade show" id="tabObservaciones" role="tabpanel">
+                    <div class="card bg-light mt-3">                    
+                        <div class="card-body">
+                            <p class="card-text">{{materia.observaciones|safe}}</p>
+                        </div>
+                    </div>    
+                </div>
+
+                <!-- Ponentes -->
+                <div class="tab-pane fade show" id="tabPonentes" role="tabpanel">
+                    <p class="card-text ml-4 mt-4">
+                        <table id="iddatatable" class="table table-hover table-condensed table-bordered">
+                            <thead style="background-color: #eeeeee; color: black; font-weight: bold; ">
+                            <tr>
+                                <th>Ponente</th>
+                                <th>Documento</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for ponente in materia.ponente.all %}
+                                    <tr>
+                                        {% if ponente.foto %}
+                                                <td><img src="{{ponente.foto.url}}" class="avatar-rounded" alt="Avatar"> 
+                                                    <a href="{% url 'ponentes:ponente' ponente.id %}">
+                                                        {{ponente.nombre}} {{ponente.apellido1}} {{ponente.apellido2}}
+                                                    </a>
+                                                </td>
+                                            {% else %}                            
+                                            {% if ponente.genero == 'M' %}
+                                                <td><img src="{% static 'registration/img/img_avatar_man.png' %}" class="avatar-rounded" alt="Avatar"> 
+                                                    <a href="{% url 'ponentes:ponente' ponente.id %}">
+                                                        {{ponente.nombre}} {{ponente.apellido1}} {{ponente.apellido2}}
+                                                    </a>
+                                                </td>
+                                            {% else %}
+                                                <td><img src="{% static 'registration/img/img_avatar_woman.png' %}" class="avatar-rounded" alt="Avatar"> 
+                                                    <a href="{% url 'ponentes:ponente' ponente.id %}">
+                                                        {{ponente.nombre}} {{ponente.apellido1}} {{ponente.apellido2}}
+                                                    </a>
+                                                </td>
+                                            {% endif %}
+                                        {% endif %}                                
+                                        <td>{{ponente.documento}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> 
+                    </p>
+                </div>
+
+                <!-- Apuntes -->
+                <div class="tab-pane fade show" id="tabApuntes" role="tabpanel">
+                    <p class="card-text ml-4 mt-4">
+                        <table id="iddatatable" class="table table-hover table-condensed table-bordered">
+                            <thead style="background-color: #eeeeee; color: black; font-weight: bold; ">
+                            <tr>
+                                <th>Denominación</th>
+                                <th>Fichero</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% get_apuntes_list materia.id as apuntes %} 
+                                {% for apunte in apuntes %}
+                                    <tr>
+                                        <td>
+                                            {% if apunte.fichero %}
+                                                <a href="{{apunte.fichero.url}}" target="_blank">{{apunte.des_apunte}}</a>
+                                            {% else %}
+                                                {{apunte.des_apunte}}
+                                            {% endif %}
+                                        </td>
+                                        <td width="10%">
+                                            <button type="button" class="upd-apunte btn btn-warning" data-id="{% url 'materias:apuntes_upd' apunte.id materia.id %}">
+                                                <span class="fas fa-pencil-alt"></span>
+                                            </button>                                         
+                                            <button type="button" class="del-apunte btn btn-danger" data-id="{% url 'materias:apuntes_del' apunte.id materia.id %}">
+                                                <span class="fas fa-trash-alt"></span>
+                                            </button>                                         
+                                        </td>          
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> 
+                        <!-- Botón que llama al formulario modal -->                      
+                        <button type="button" class="add-apunte btn btn-primary" data-id="{% url 'materias:apuntes_add' materia.id %}">
+                            Añadir Apuntes <span class="fas fa-plus-circle"></span>
+                        </button>    
+                    </p>
+                </div>
+
+                <!-- Ponencias -->
+                <div class="tab-pane fade show" id="tabPonencias" role="tabpanel">
+                    <p class="card-text ml-4 mt-4">
+                        <table id="iddatatable" class="table table-hover table-condensed table-bordered">
+                            <thead style="background-color: #eeeeee; color: black; font-weight: bold; ">
+                                <tr>
+                                    <th>Denominación</th>
+                                    <th>Ponentes</th>
+                                    <th>Fecha</th>
+                                    <th>Inicio</th>
+                                    <th>Fin</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% get_ponencias_list materia.id as ponencias %} 
+                                {% for ponencia in ponencias %}
+                                    <tr>
+                                        <td>{{ponencia.denominacion}}</td>
+                                        <td>
+                                            {% for ponente in ponencia.ponente.all %}
+                                                <a href="{% url 'ponentes:ponente' ponente.id %}">{{ponente.get_fullname}}</a>
+                                                {% if not forloop.last %} , {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ponencia.fecha|date:'d/m/Y'}}</td>                                
+                                        <td>{{ponencia.hinicio}}</td>                                
+                                        <td>{{ponencia.hfin}}</td>                                
+                                        <td width="10%">
+                                            <button type="button" class="upd-ponencia btn btn-warning" data-id="{% url 'materias:ponencia_upd' ponencia.id materia.id %}">
+                                                <span class="fas fa-pencil-alt"></span>
+                                            </button>                                         
+                                            <button type="button" class="del-ponencia btn btn-danger" data-id="{% url 'materias:ponencia_del' ponencia.id materia.id %}">
+                                                <span class="fas fa-trash-alt"></span>
+                                            </button>                                         
+                                        </td>          
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> 
+                        <!-- Botón que llama al formulario modal -->                      
+                        <button type="button" class="add-ponencia btn btn-primary" data-id="{% url 'materias:ponencia_add' materia.id %}">
+                            Añadir Ponencia <span class="fas fa-plus-circle"></span>
+                        </button>    
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% comment %} BLOQUE CON SCRIPTS {% endcomment %}
+{% block extrascripts %}
+    
+    <!-- Formularios Modales -->
+    <script src="{% static 'core/terceros/jquery/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            // Apuntes. Crear, Actualizar y Borrar
+            $(".add-apunte").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+            $(".upd-apunte").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+            $(".del-apunte").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+
+            // Ponencias. Crear, Actualizar y Borrar
+            $(".add-ponencia").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+            $(".upd-ponencia").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+            $(".del-ponencia").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+
+
+            // Hide message
+            $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+                $(".alert").slideUp(500);
+            });
+
+        });
+    </script>
+    
+{% endblock extrascripts %}

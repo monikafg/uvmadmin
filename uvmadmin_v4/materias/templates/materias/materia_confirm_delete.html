@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Borrar {{materia.tipo_materia.des_materia}}{% endblock %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Materias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Materias</li>
+                    <li class="breadcrumb-item active">Eliminar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL -->
+    <div class="card">
+    
+      <!-- MENÚ  -->
+      <h5 class="card-header text-white bg-dark">  
+        {% if request.user.is_active %}
+          {% include 'materias/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- DETALLE --> 
+      <div class="card-body">
+          <form action="" method="post">{% csrf_token %}
+            <h5 class="card-title mt-2 mb-3">
+              ¿Está seguro de querer borrar esta materia?
+            </h5>
+
+            <div class="form-row" style="text-align:center">
+              <div class="card" style="width: 50%;">
+                {% if materia.foto %}
+                  <img class="card-img-top" src="{{materia.imagen.url}}" alt="Imagen">
+                {% else %}                    
+                  <img class="card-img-top" src="{% static 'noticias/img/no-image.png' %}" alt="Imagen">
+                {% endif %}
+                
+                <div class="card-body">
+                  <h5 class="card-title">{{materia.codigo}}</h5>
+                  <p class="card-text">{{materia.denominacion}} </p>
+
+                  <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar este {{materia.tipo_materia.des_materia}}" />
+                  <a class="btn btn-secondary btn-block" href="{% url 'materias:materias' %}">Cancelar</a>
+
+                </div>
+              </div>       
+
+            </div>
+
+          </form>
+
+      </div>
+    </div>
+
+{% endblock %}
+
+<!-- Librerías JS - Específicas para esta página -->
+{% block extrascripts %}
+{% endblock extrascripts %}

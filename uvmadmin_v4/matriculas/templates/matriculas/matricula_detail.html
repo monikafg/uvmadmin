@@ -1,0 +1,134 @@
+{% extends 'core/base.html' %}                <!-- Plantilla Base -->
+{% load static %}                             <!-- Ficheros Estáticos -->
+{% load materia_tags %}                       <!-- Cargamos los templatetags de materias -->
+
+{% block title %}{{matricula}} {% endblock %}
+
+{% block libreriasCSS %}
+{% endblock libreriasCSS %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Matrículas</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Matrículas</li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>   
+
+
+    <!-- PANEL DETALLE -->
+    <div class="card">
+        <!-- MENÚ  -->
+        <h5 class="card-header text-white bg-dark">  
+            {% if request.user.is_active %}
+                {% include 'matriculas/includes/_menu.html'%}
+            {% endif %}
+        </h5>
+
+        <!-- PANEL DETALLE --> 
+        <div class="card-body">
+            <div class="tab-content" id="myTabContent">
+                <h5 class="card-title"><strong>Matrícula: </strong>{{matricula.id|stringformat:'04d'}}</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 col-lg-6 col-xl-6">
+                        <p class="card-text"><strong>Alumno: </strong>
+                            <a href="{% url 'alumnos:alumno' matricula.alumno.id %}">
+                                {{matricula.alumno.documento}}</a> - {{matricula.alumno.get_fullname}}
+                        </p>
+                        <p class="card-text"><strong>{{matricula.materia.tipo_materia}}: </strong>
+                            <a href="{% url 'materias:materia' matricula.materia.id %}">
+                                {{matricula.materia.codigo}}</a> - {{matricula.materia}} 
+                        </p>
+                        <p class="card-text"><strong>Edición: </strong>{{matricula.edicion}}</p>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-6">
+                        <p class="card-text"><strong>Estado: </strong>{{matricula.estado}} </p>
+                        <p class="card-text"><strong>Fecha Reserva: </strong>{{matricula.freserva}} </p>
+                        {% if matricula.fpago %}
+                            <p class="card-text"><strong>Fecha Pago: </strong>{{matricula.fpago}} </p>
+                            <p class="card-text"><strong>Lugar de Pago: </strong>{{matricula.lugar}}</p>
+                        {% endif %}
+                        {% if matricula.impreso %} Impresa {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PANELES LISTADOS DE MATRÍCULAS -->
+    <div class="row mt-3">
+        <div class="col-md-6 col-lg-6 col-xl-6">
+            <div class="card">
+                <h6 class="card-header text-white bg-success">{{matricula.alumno.get_fullname}}</h6>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Matrícula</th>
+                            <th scope="col">Materia</th>
+                        </tr>
+                        </thead>
+                        <tbody>                    
+                            {% for matalumno in matricula.get_matriculas_alumno %}
+                                {% if matalumno.id != matricula.id %}
+                                    <tr>
+                                        <th scope="row"><a href="{% url 'matriculas:matricula' matalumno.id %}">
+                                            {{matalumno.id|stringformat:'04d'}}</a>
+                                        </th>
+                                        <td>{{matalumno.materia.get_fullname}}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-6 col-xl-6">            
+            <div class="card">
+                <h6 class="card-header text-white bg-info">{{matricula.materia}}</h6>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Matrícula</th>
+                            <th scope="col">Alumno</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for matmateria in matricula.get_matriculas_materia %}
+                                {% if matmateria.id != matricula.id %}
+                                    <tr>
+                                        <th scope="row"><a href="{% url 'matriculas:matricula' matmateria.id %}">
+                                            {{matmateria.id|stringformat:'04d'}}</a>
+                                        </th>
+                                        <td>{{matmateria.alumno}}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock content %}
+
+
+{% comment %} BLOQUE CON SCRIPTS {% endcomment %}
+{% block extrascripts %}
+{% endblock extrascripts %}

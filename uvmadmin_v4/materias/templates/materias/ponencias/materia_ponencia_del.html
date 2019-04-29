@@ -1,0 +1,20 @@
+{% load widget_tweaks %}
+
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">Quitar Ponencia</h3>
+  </div>
+
+  <div class="modal-body">
+    <p class="delete-text">¿Está seguro de quitar la ponencia
+      <strong>{{ ponencia.denominacion }}</strong>?</p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="submit" class="delete-btn btn btn-danger">Quitar</button>
+  </div>
+
+</form>

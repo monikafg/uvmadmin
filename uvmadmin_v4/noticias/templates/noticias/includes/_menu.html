@@ -1,0 +1,48 @@
+{% load static %} 
+<!-- Librerías CSS - Específicas para esta página -->
+{% block libreriasCSS %} 
+    <link href="{% static 'noticias/css/custom_ckeditor.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block libreriasJS %} 
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+
+
+{% if request.user.is_active %}
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'noticias:noticias' %}">NOTICIAS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+      {% if '/borrar' not in request.path %}
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+          {% if '/crear' not in request.path and '/editar' not in request.path %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'noticias:editar' noticia.id %}">Editar</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'noticias:borrar' noticia.id %}">Borrar</a>
+            </li>
+          {% endif %}
+
+        </ul>
+
+        <form class="form-inline my-2 my-lg-0">
+          {% if '/crear' not in request.path and '/editar' not in request.path %}
+            <a href="{% url 'noticias:crear' %}" class="btn btn-primary" role="button">Añadir Nueva <span class="fas fa-plus-circle"></span></a> 
+          {% endif %}
+        </form>
+
+      {% endif %}
+
+    </div>
+  </nav>
+{% endif %}
+

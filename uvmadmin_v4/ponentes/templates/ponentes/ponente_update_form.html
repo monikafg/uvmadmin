@@ -1,0 +1,182 @@
+{% extends 'core/base.html' %}
+{% load static %}
+ 
+{% block title %}Actualizar Ponente{% endblock %}
+
+{% block libreriasCSS %}
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Ponentes</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Ponentes</li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL-->
+    <div class="card">
+
+        <!-- MENÚ -->
+        <h5 class="card-header text-white bg-dark">  
+            {% if request.user.is_active %}
+                {% include 'ponentes/includes/_menu.html'%}
+            {% endif %}
+        </h5>
+
+        <!-- DETALLE --> 
+        <div class="card-body">
+
+            <h5 class="card-title">{{ponente.tipo_documento}}: {{ponente.documento}}</h5>
+
+            <!-- OK. Si se ha editado correctamente muestra mensaje y enlace al detalle de la noticia -->
+            {% if 'ok' in request.GET %}
+            <p class="card-text" style="color:green;">
+                Ponente editado correctamente. 
+                <a href="{% url 'ponentes:ponente' ponente.id %}">Haz clic aquí para ver el resultado</a>.
+            </p>
+            {% endif %}
+
+            <!-- FORMULARIO -->
+            <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}        
+
+                <div class="form-row">
+                    <!-- Campos ocultos --> 
+                    {{form.tipo_documento}}
+                    {{form.documento}}
+
+                    <!-- Avatar -->
+                    <div class="form-group col-md-2">
+                        {% if form.foto.value %}
+                        <img src="{{form.foto.value.url}}" class="img-fluid mt-2">                  
+                        <p class="mt-1">¿Borrar Avatar? <input type="checkbox" id="foto-clear_id" name="foto-clear" /></p>
+                        {% else %}                    
+                            {% if form.genero == 'M' %}
+                                <img src="{% static 'registration/img/img_avatar_man.png' %}" class="img-fluid mt-2"> 
+                            {% else %}
+                                <img src="{% static 'registration/img/img_avatar_woman.png' %}" class="img-fluid mt-2">                             
+                            {% endif %}
+
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-10">
+                        <!-- Nombre y Apellidos -->
+                        <div class="form-row">
+                            <div class="form-group col-md-4">{{form.nombre}}</div>
+                            <div class="form-group col-md-4">{{form.apellido1}}</div>
+                            <div class="form-group col-md-4">{{form.apellido2}}</div>
+                        </div>                        
+
+                        <!-- Selección Imagen, Fecha Nacimiento y Actividad -->
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <div class="custom-file">                      
+                                    <input type="file" class="custom-file-input mb-2" accept=".jpg,.gif,.png" 
+                                        id="{{form.foto.name}}" name="{{form.foto.name}}" placeholder="{{form.foto.value}}">
+                                    <label class="custom-file-label" for="{{form.foto.name}}">Seleccione Imágen de perfil...</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">{{form.nacimiento}}</div>
+                            <div class="form-group col-md-4">{{form.genero}}</div>
+                        </div> 
+
+                    </div>
+                </div>
+
+                <!-- Pais, Provincia y Municipio -->
+                <div class="form-row">
+                    <div class="form-group col-md-4">{{form.pais}}</div>
+                    <div class="form-group col-md-4">{{form.provincia}}</div>
+                    <div class="form-group col-md-4">{{form.des_municipio}}</div>
+                </div>
+
+                <!-- Dirección y Código Postal -->
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        {{form.direccion}}
+                    </div>
+                    <div class="form-group col-md-4 mt-2">
+                        {{form.cod_postal}}
+                    </div>
+                </div>
+
+                <!-- Emails -->
+                <div class="form-row">
+                    <div class="form-group col-md-5">{{form.email1}}</div>
+                    <div class="form-group col-md-5">{{form.email2}}</div>
+                </div>
+
+                <!-- Teléfonos, Nacimiento, Residente -->
+                <div class="form-row">
+                    <div class="form-group col-md-4">{{form.telefono1}}</div>
+                    <div class="form-group col-md-4">{{form.telefono2}}</div>
+                    <div class="form-group col-md-4">{{form.residente}}</div>
+                </div>
+
+                <!-- Cargo (Editor de Texto) -->
+                <p><b>Cargo</b></p>
+                <div class="form-row">{{ form.cargo }}</div>
+                <!-- Selección del fichero adjunto y Sitio Web-->
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <p><b>Currículum Vitae</b></p>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" accept=".pdf" 
+                                    id="{{form.curriculum.name}}" name="{{form.curriculum.name}}" placeholder="{{form.curriculum.value}}">
+                            
+                            {% if form.curriculum.value %}
+                            <label class="custom-file-label" for="{{form.curriculum.name}}">{{form.curriculum.value}}</label>
+                                <p class="mt-1">Eliminar <input type="checkbox" id="curriculum-clear_id" name="curriculum-clear" /></p>
+                            {% else %}
+                                <label class="custom-file-label" for="{{form.curriculum.name}}">Seleccione curriculum...</label>
+                            {% endif %}                         
+
+                        </div>        
+                    </div>
+                    <div class="form-group col-md-6">
+                        <p><b>Sitio Web</b></p>
+                        {{ form.web }}
+                    </div>
+                </div>
+
+                <!-- BOTONES CANCELAR Y ACTUALIZAR -->
+                <div class="row mt-5">
+                    <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                        <a href="{% url 'ponentes:ponentes' %}" id="cancel" name="cancel" class="btn btn-secondary">CANCELAR</a>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                        <input type="submit"  class="btn btn-warning btn-block" value="ACTUALIZAR" />
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+
+{% endblock %} 
+
+
+
+<!-- Librerías JS - Específicas para esta página -->
+{% block extrascripts %}
+    <!-- Script para mostrar el nombre del fichero seleccionado en el control -->
+    <script>        
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>  
+{% endblock extrascripts %}

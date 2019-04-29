@@ -1,0 +1,34 @@
+{% load static %}
+
+{% if request.user.is_active %}
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'matriculas:matriculas' %}">MATRÍCULAS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+      {% if '/borrar' not in request.path %}
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        
+          {% if '/crear' not in request.path and '/editar' not in request.path %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'matriculas:editar' matricula.id %}">Editar</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'matriculas:borrar' matricula.id %}">Borrar</a>
+            </li>
+          {% endif %}
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          {% if '/crear' not in request.path and '/editar' not in request.path %}
+            <a href="{% url 'matriculas:crear' %}" class="btn btn-primary" role="button">Añadir Nueva <span class="fas fa-plus-circle"></span></a> 
+          {% endif %}
+        </form>
+      {% endif %}
+    </div>
+  </nav>
+{% endif %}

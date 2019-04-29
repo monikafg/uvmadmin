@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Editar {{organizador.tipo_organizador}}{% endblock %}
+
+{% block libreriasCSS %}
+  <link href="{% static 'core/terceros/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+
+{% block content %}
+
+  <!-- PANEL -->
+  <div class="card">
+
+    <!-- MENÚ  -->
+    <h5 class="card-header text-white bg-dark">    
+      {% if request.user.is_active %}
+        {% include 'universidad/includes/_menu.html'%}
+      {% endif %}
+    </h5>
+
+    <!-- DETALLE DEL ALUMNO --> 
+    <div class="card-body">
+        <h5 class="card-title">
+            <!-- Si se ha editado correctamente muestra mensaje y enlace al detalle -->
+            {% if 'ok' in request.GET %}
+            <p class="card-text" style="color:green;">
+                {{organizador.tipo_organizador}} editado correctamente. 
+                <a href="{% url 'universidad:organizador' organizador.id %}">Haz clic aquí para ver el resultado</a>.
+            </p>
+            {% endif %}
+        </h5>
+
+        <!-- Detalle del Alumno -->
+        <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}        
+            
+            <div class="form-row">
+                <div class="col-md-4">
+                    <label for="{{form.tipo_organizador.name}}">Tipo Organizador</label>
+                    {{form.tipo_organizador}}
+                </div>
+                <div class="col-md-8">
+                    <label for="{{form.nombre.name}}">Nombre</label>
+                    {{form.nombre}}
+                </div>
+            </div>
+            <!-- Selección del fichero adjunto y Sitio Web-->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <p><b>Logo</b></p>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" accept=".jpg, .png, .gif" 
+                                id="{{form.logo.name}}" name="{{form.logo.name}}" placeholder="{{form.logo.value}}">
+                        
+                        {% if form.logo.value %}
+                        <label class="custom-file-label" for="{{form.logo.name}}">{{form.logo.value}}</label>
+                            <p class="mt-1">Eliminar <input type="checkbox" id="curriculum-clear_id" name="curriculum-clear" /></p>
+                        {% else %}
+                            <label class="custom-file-label" for="{{form.logo.name}}">Seleccione logo...</label>
+                        {% endif %}                         
+
+                    </div>        
+                </div>
+                <div class="form-group col-md-6">
+                    <p><b>Sitio Web</b></p>
+                    {{ form.web }}
+                </div>
+            </div>
+
+            <!-- BOTONES CANCELAR Y CREAR -->
+            <div class="row mt-5">
+                <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                    <a href="{% url 'universidad:organizadores' %}" id="cancel" name="cancel" class="btn btn-secondary">CANCELAR</a>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                    <input type="submit"  class="btn btn-warning btn-block" value="GRABAR" />
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+  </div>
+  
+
+{% endblock %} 
+
+
+
+{% block extrascripts %} 
+	<script src="{% static 'core/terceros/jquery/jquery.min.js' %}"></script>
+	<script src="{% static 'core/terceros/bootstrap/bootstrap.min.js' %}"></script>
+
+    <!-- Script para mostrar el nombre del fichero seleccionado en el control -->
+    <script>        
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>  
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% load widget_tweaks %}
+
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+  
+  <div class="modal-header">
+    <h3 class="modal-title">Añadir Apuntes</h3>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+
+    <div class="form-group">
+        {{form.des_apunte}}
+        <div class="{% if form.des_apunte.errors %} invalid{% endif %}">
+          {% for error in form.des_apunte.errors %}
+            <p class="help-block">{{ error }}</p>
+          {% endfor %}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="custom-file">                      
+            <input type="file" class="custom-file-input mb-2" accept=".pdf" 
+                id="{{form.fichero.name}}" name="{{form.fichero.name}}" placeholder="{{form.fichero.value}}">
+            <label class="custom-file-label" for="{{form.fichero.name}}">Seleccione Fichero...</label>
+        </div>
+        <div class="{% if form.fichero.errors %} invalid{% endif %}">
+          {% for error in form.fichero.errors %}
+            <p class="help-block">{{ error }}</p>
+          {% endfor %}
+        </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <button type="button" class="submit-btn btn btn-primary">Añadir</button>
+  </div>
+
+</form>
+
+{% block extrascripts %} 
+ 
+  <script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+  </script>
+
+{% endblock extrascripts %}

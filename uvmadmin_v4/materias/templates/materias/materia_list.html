@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}          <!-- Cargamos el código html común -->
+{% load static %}                       <!-- Cargamos los ficheros estáticos -->
+ 
+{% block title %}Materias{% endblock %}
+
+<!-- Librerías CSS - Específicas para esta página -->
+{% block libreriasCSS %}  
+    <link rel="stylesheet" href="{% static 'core/terceros/datatable/dataTables.bootstrap4.min.css' %}">
+{% endblock %}
+
+
+<!-- Contenido principal -->
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Materias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Materias</li>
+                    <li class="breadcrumb-item active">Listado</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE LISTADO DE MATERIAS -->
+    <div class="card">
+        <h5 class="card-header text-white bg-dark">  
+            <a href="{% url 'materias:crear' %}" class="btn btn-primary" role="button">
+                Nueva Materia 
+                <span class="fas fa-plus-circle"></span>
+            </a> 
+        </h5>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text">
+                <table id="iddatatable" class="table table-hover table-condensed table-bordered">
+                    <thead style="background-color: #005b9f; color: white; font-weight: bold; ">
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Código</th>
+                            <th>Denominación</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Borrar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in object_list %}
+                            <tr>
+                                <td>{{materia.tipo_materia.des_materia}}</td>
+                                <td><a href="{% url 'materias:materia' materia.id %}">{{materia.codigo}}</a></td>
+                                <td>{{materia.denominacion}}</td>                                
+                                <td>{{materia.finicio|date:'d/m/Y'}}</td>                                
+                                <td>{{materia.ffin|date:'d/m/Y'}}</td>                                
+                                <td width="5%">
+                                  <a href="{% url 'materias:borrar' materia.id %}" id="delMateria" name="delMateria" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash-alt fa-xs"></i>
+                                  </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot style="background-color: #373737; color: white; font-weight: bold;">
+                        <th>Tipo</th>
+                        <th>Código</th>
+                        <th>Denominación</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Borrar</th>
+                    </tfoot>
+                </table> 
+            </p>            
+        </div>
+    </div>
+
+    
+    <!-- FIN PANEL LISTADO DE MATERIAS -->
+
+
+{% endblock %}
+
+
+<!-- Librerías JS - Específicas para esta página -->
+{% block extrascripts %}
+    <script src="{% static 'core/terceros/datatable/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'core/terceros/datatable/dataTables.bootstrap4.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#iddatatable').DataTable({
+                "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.10.18/i18n/Spanish.json"
+                        }
+            });
+        } );
+    </script>
+{% endblock extrascripts %}

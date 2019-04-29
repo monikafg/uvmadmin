@@ -1,0 +1,133 @@
+{% extends 'core/base.html' %}          <!-- Cargamos el código html común -->
+{% load static %}                       <!-- Cargamos los ficheros estáticos -->
+{% load alumnos_tags %}                 <!-- Cargamos los templatetags de alumnos -->
+
+{% block title %}Alumno{% endblock %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Alumnos</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Alumnos</li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PANEL DE DETALLE DEL ALUMNO - TIPO CARDS -->
+    <div class="card">
+
+        <h5 class="card-header text-white bg-dark">
+          {% if request.user.is_active %}
+            {% include 'alumnos/includes/_menu.html'%}
+          {% endif %}        
+        </h5>
+
+        <div class="card-body">
+
+          <div class="row">
+            <!-- Avatar -->
+            <div class="column col-md-2">
+                {% if alumno.foto %}
+                  <img src="{{alumno.foto.url}}" class="img-fluid mt-2">                  
+                {% else %}                    
+                    {% if alumno.genero == 'M' %}
+                        <img src="{% static 'registration/img/img_avatar_man.png' %}" class="img-fluid mt-2"> 
+                    {% else %}
+                        <img src="{% static 'registration/img/img_avatar_woman.png' %}" class="img-fluid mt-2">                             
+                    {% endif %}
+                {% endif %}
+            </div>  
+            <div class="form-group col-md-5">
+              <h4 class="mt-2 mb-4">{{alumno.get_fullname}}</h4>
+              <p><strong>Género:</strong> {% if alumno.genero == "M" %} Masculino {% else %} Femenino {% endif %} </p>
+              <p><strong>Actividad:</strong> {{ alumno.actividad.des_actividad }}</p> 
+              <p><strong>Nacimiento:</strong> {% if alumno.nacimiento %} {{ alumno.nacimiento }} {% endif %} </p> 
+              <p class="card-text text-left"><strong>Es Residente:</strong> {% if alumno.residente %} Si {% else %} No {% endif %}</p>
+
+            </div>
+          </div>   
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Dirección</h5>
+                  <p class="card-text text-left"><strong>Pais:</strong> {{ alumno.pais.des_pais }}</p>
+                  <p class="card-text text-left"><strong>Provincia:</strong> {{ alumno.provincia.des_provincia }}</p>
+                  <p class="card-text text-left"><strong>Municipio:</strong> {{ alumno.des_municipio }}</p>
+                  <p class="card-text text-left"><strong>Dirección:</strong> {{ alumno.direccion }}</p>
+                  <p class="card-text text-left"><strong>Código Postal:</strong> {{ alumno.cod_postal }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body text-center">
+                  <h5 class="card-title text-center">Contacto</h5>
+                  <p class="card-text text-left"><i class="fas fa-phone"></i> {{alumno.telefono1}}</p>
+                  <p class="card-text text-left"><i class="fas fa-phone"></i> {{alumno.telefono2}}</p>
+                  <p class="card-text text-left"><i class="fas fa-at"></i> {{alumno.email1}}</p>
+                  <p class="card-text text-left"><i class="fas fa-at"></i> {{alumno.email2}}</p>
+                  <p class="card-text text-left"><strong>Recibir Mail:</strong> {% if alumno.recibirmail %} Si {% else %} No {% endif %}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+       </div>
+
+    </div>  
+
+    <!-- MATRÍCULAS DEL ALUMNO -->
+    <div class="row mt-3">
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <h6 class="card-header text-white bg-success">Matrículas de: {{alumno.get_fullname}}</h6>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Matrícula</th>
+                            <th scope="col">Materia</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Reserva</th>
+                            <th scope="col">Pago</th>
+                            <th scope="col">Importe</th>
+                            <th scope="col">Descuento</th>
+                        </tr>
+                        </thead>
+                        <tbody>   
+                            {% get_alumno_matriculas alumno.id as matriculas %}                 
+                            {% for matricula in matriculas %}
+                              <tr>
+                                  <th scope="row"><a href="{% url 'matriculas:matricula' matricula.id %}">
+                                      {{matricula.id|stringformat:'04d'}}</a>
+                                  </th>
+                                  <td><a href="{% url 'materias:materia' matricula.materia.id %}">
+                                    {{matricula.materia.codigo}}</a> - {{matricula.materia.denominacion}}
+                                  </td>
+                                  <td>{{matricula.estado}}</td>
+                                  <td>{{matricula.freserva|date:'d/m/Y'}}</td>
+                                  <td>{{matricula.fpago|date:'d/m/Y'}}</td>
+                                  <td>{{matricula.materia.importe}}</td>
+                                  <td>{{matricula.get_descuento.importe}}</td>
+                              </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

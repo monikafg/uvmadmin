@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Editar Matrícula: {{matricula.id|stringformat:'04d'}}{% endblock %}
+
+{% block libreriasCSS %}
+{% endblock libreriasCSS %}
+
+
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Matrículas</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Matrículas</li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DEL ALUMNO -->
+    <div class="card">
+
+      <!-- MENÚ DE ALUMNOS -->
+      <h5 class="card-header text-white bg-dark">    
+        {% if request.user.is_active %}
+          {% include 'matriculas/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- DETALLE DEL ALUMNO --> 
+      <div class="card-body">
+          <h5 class="card-title"><strong>Matrícula: </strong>{{matricula.id|stringformat:'04d'}}</h5>
+          <hr>
+
+          <!-- Detalle del Alumno -->
+          <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}        
+              
+              <div class="form-row">
+                  <div class="col-md-8">
+                      <p class="card-text">{{matricula.edicion}}<p>
+                      {{form.alumno}}
+                      {{form.materia}}
+                      {{form.estado}}
+                      {{form.freserva}}
+                  </div>
+                  <div class="col-md-4">
+                      <p class="card-text"><strong>Fecha y Lugar Pago</strong><p>
+                      {{form.fpago}}
+                      {{form.lugar}}
+                      <p class="card-text"><strong>Impreso</strong><p>
+                      {{form.impreso}}
+                  </div>
+              </div>
+
+              <!-- BOTONES CANCELAR Y CREAR -->
+              <div class="row mt-5">
+                  <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                      <a href="{% url 'matriculas:matricula' matricula.id %}" id="cancel" name="cancel" class="btn btn-secondary">CANCELAR</a>
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-6 pad-adjust">
+                      <input type="submit"  class="btn btn-warning btn-block" value="ACTUALIZAR" />
+                  </div>
+              </div>
+
+          </form>
+
+      </div>
+    </div>
+  
+
+{% endblock content %} 
+
+
+{% block extrascripts %} 
+{% endblock extrascripts %}

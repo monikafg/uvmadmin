@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Eliminar noticia{% endblock %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Noticias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Noticias</li>
+                    <li class="breadcrumb-item active">Eliminar</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE LA NOTICIA -->
+    <div class="card">
+
+      <!-- MENÚ DE NOTICIAS -->
+      <h5 class="card-header text-white bg-dark">  
+        {% if request.user.is_active %}
+          {% include 'noticias/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- DETALLE DE LA NOTICIA --> 
+      <div class="card-body">
+          <form action="" method="post">{% csrf_token %}
+            <h5 class="card-title text-center mt-5 mb-5">
+              ¿Está seguro de querer borrar la noticia: <b>"{{ object }}"</b>?
+            </h5>
+            <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar la noticia" />
+            <a class="btn btn-secondary btn-block" href="{% url 'noticias:noticias' %}">Cancelar</a>
+          </form>
+
+      </div>
+    </div>
+
+{% endblock content %}

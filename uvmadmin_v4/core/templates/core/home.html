@@ -1,0 +1,143 @@
+{% extends 'core/base.html' %}          <!-- Cargamos el código html común -->
+{% load static %}                       <!-- Cargamos los ficheros estáticos -->
+{% load core_tags %}                    <!-- Cargamos los templatetags de core -->
+
+{% block title %}Inicio{% endblock %}   <!-- Título de la página -->
+ 
+{% block libreriasCSS %}{% endblock libreriasCSS %}
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Panel de Control</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item active">Panel de Control</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANTENIMIENTOS ALUMNOS, PONENTES, MATERÍAS Y MATRÍCULAS -->
+    <div class="row">
+        <!-- Alumnos -->
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-default">
+                <i class="fas fa-id-card float-right text-white"></i>
+                <a href="{% url 'alumnos:alumnos' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Alumnos</h6>
+                </a>
+                <h1 class="m-b-20 text-white counter">{% get_alumnos_count %}</h1>
+                <span class="text-white">15 Nuevos Alumnos</span>
+            </div>
+        </div>
+
+        <!-- Ponentes -->
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-warning">
+                <i class="fas fa-chalkboard-teacher float-right text-white"></i>
+                <a href="{% url 'ponentes:ponentes' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Ponentes</h6>
+                </a>
+                <h1 class="m-b-20 text-white counter">{% get_ponentes_count %}</h1>
+                <span class="text-white">3 Nuevos Ponentes</span>
+            </div>
+        </div>
+
+        <!-- Materias -->
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-danger">
+                <i class="fas fa-book float-right text-white"></i>
+                <a href="{% url 'materias:materias' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Materias</h6>
+                </a>
+                <h1 class="m-b-20 text-white counter">{% get_materias_count %}</h1>
+                <span class="text-white">5 Nuevas Materias</span>
+            </div>
+        </div>
+
+        <!-- Matrículas -->
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-info">
+                <i class="fas fa-id-card float-right text-white"></i>
+                <a href="{% url 'matriculas:matriculas' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Matrículas</h6>
+                </a>
+                <h1 class="m-b-20 text-white counter">{% get_matriculas_count %}</h1>
+                <span class="text-white">25 Nuevas Matrículas</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NOTICIAS, INFORMACIÓN, UNIVERSIDAD Y GALERÍA -->
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-success">
+                <i class="fas fa-newspaper float-right text-white"></i>
+                <a href="{% url 'noticias:noticias' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Noticias</h6>
+                </a>
+                <h1 class="m-b-20 text-white counter">{% get_noticias_count %}</h1>
+                <span class="text-white">2 Nuevas Noticias</span>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-primary">
+                <i class="fas fa-info-circle float-right text-white"></i>
+                <a href="{% url 'pages:pages' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Información</h6>
+                </a>
+                <p class="m-b-20 text-white">Proceso de matrícula, fechas, precios, condiciones, transporte, alojamiento...</p>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-brown">
+                <i class="fas fa-university float-right text-white"></i>
+                <a href="{% url 'universidad:organizadores' %}">
+                    <h6 class="text-white text-uppercase m-b-20">La Universidad</h6>
+                </a>
+                <p class="m-b-20 text-white">Patrocinadores, Colaboradores, Organizadores.</p>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card-box noradius noborder bg-secondary-dark">
+                <i class="fas fa-images float-right text-white"></i>
+                <a href="{% url 'gallery:album_list' %}">
+                    <h6 class="text-white text-uppercase m-b-20">Galería</h6>
+                </a>
+                <p class="m-b-20 text-white">Álbumes de fotos utilizadas en las noticias</p>
+                <span class="text-white">8 Álbumes</span>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock content %}
+
+
+{% block extrascripts %}    
+
+    <!-- Counter-Up-->    
+    <script src="{% static 'core/terceros/jquery/waypoints/lib/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'core/terceros/jquery/counterup/jquery.counterup.min.js' %}"></script>			
+
+    <script>
+        $(document).ready(function() {
+            // counter-up
+            $('.counter').counterUp({
+                delay: 10,
+                time: 600
+            });
+        } );		
+    </script>
+
+{% endblock extrascripts %}

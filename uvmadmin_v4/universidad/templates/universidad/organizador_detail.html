@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{organizador.nombre}}{% endblock %}
+
+{% block libreriasCSS %}
+{% endblock %}
+
+
+
+{% block content %}
+
+  <!-- PANEL -->
+  <div class="card">
+
+    <!-- MENÚ  -->
+    <h5 class="card-header text-white bg-dark">    
+      {% if request.user.is_active %}
+        {% include 'universidad/includes/_menu.html'%}
+      {% endif %}
+    </h5>
+
+    <!-- DETALLE --> 
+    <div class="card-body">
+        <h3 class="card-title">{{organizador.tipo_organizador}}</h3>
+
+        <!-- Detalle -->
+        <div class="card bg-warning">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-md-3 d-flex p-2">
+                            <img src="{{organizador.logo.url}}">
+                    </div>
+                    <div class="col-md-9 py-3">
+                        <h3 class="card-title">{{organizador.nombre}}</h3>
+                        <h5 class="card-title">{{organizador.tipo_organizador}} en la {{organizador.edicion}}</h5>
+                        {% if organizador.web %}
+                            <a href="{{organizador.web}}" target="_blank" class="btn btn-info">Sitio Web</a>
+                        {% else %}        
+                            <br>                    
+                            <p class="card-text">Sitio Web sin especificar</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row mt-4">
+            <div class="col-md-12 col-lg-12 col-xl-12">
+                <div class="card">
+                    <h6 class="card-header text-white bg-success">OTROS {{organizador.tipo_organizador|upper}}ES</h6>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                    <th scope="col">Logo</th>
+                                    <th scope="col">Nombre</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in organizador.get_Organizadores_Tipo.all %}
+                                {% if item.id != organizador.id %}
+                                    <tr>
+                                        {% if organizador.logo %}
+                                            <td><img src="{{item.logo.url}}" class="avatar-rounded" alt="Avatar"> 
+                                            </td>
+                                        {% endif %}                                
+                                        <td><a href="{% url 'universidad:organizador' item.id item.nombre|slugify %}">{{item.nombre}}</a></td>
+                                    </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+
+{% endblock %} 
+
+
+
+{% block extrascripts %} 
+{% endblock %}

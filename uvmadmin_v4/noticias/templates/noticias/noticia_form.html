@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Nueva noticia{% endblock title %}
+
+{% block libreriasCSS %} {% endblock libreriasCSS %}
+
+{% block libreriasJS %} 
+	<script src="{% static 'core/terceros/jquery/jquery.min.js' %}"></script>
+	<script src="{% static 'core/terceros/bootstrap/bootstrap.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- BREADCRUMB -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="breadcrumb-holder">
+                <h1 class="main-title float-left">Noticias</h1>
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item">Inicio</li>
+                    <li class="breadcrumb-item">Noticias</li>
+                    <li class="breadcrumb-item active">Nueva</li>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE LA NOTICIA -->
+    <div class="card">
+
+      <!-- MENÚ DE NOTICIAS -->
+      <h5 class="card-header text-white bg-dark">  
+        {% if request.user.is_active %}
+          {% include 'noticias/includes/_menu.html'%}
+        {% endif %}
+      </h5>
+
+      <!-- DETALLE DE LA NOTICIA --> 
+      <div class="card-body">
+          <h5 class="card-title"></h5>
+
+          <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+              <div class="row mt-3">
+                <!-- IMÁGEN Y BOTONES DEL FORMULARIO -->
+                <div class="col-md-2">
+                  <div class="row">
+                    <input type="submit" class="btn btn-primary btn-block" value="Crear noticia" />
+                  </div>
+                  <div class="row mt-2">
+                    <a class="btn btn-secondary btn-block" href="{% url 'noticias:noticias' %}">Cancelar</a>
+                  </div>
+                </div>
+
+                <!-- DETALLE DE LA NOTICIA -->
+                <div class="col-md-10">  
+                  <!-- Usuario activo -->
+                  <input type="hidden" id="{{form.author.name}}" name="{{form.author.name}}" value="{{request.user.id}}">             
+                  <!-- Imagen de la noticia -->                      
+                  <div class="custom-file">                      
+                    <input type="file" class="custom-file-input mb-2" accept=".jpg,.gif,.png" 
+                            id="{{form.image.name}}" name="{{form.image.name}}">
+                    <label class="custom-file-label" for="{{form.image.name}}">Seleccione Imágen de portada...</label>
+                  </div>
+
+                  {{ form.title }}
+                  {{ form.subject }}
+                  {{ form.content }}
+
+                  <div class="form-row">
+                    <div class="form-group col-md-4">
+                      {{ form.galeria }}
+                    </div>
+                    <div class="form-group col-md-4">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" accept=".pdf" id="{{form.fichero.name}}" name="{{form.fichero.name}}" placeholder="{{form.fichero.value}}">
+                        <label class="custom-file-label" for="{{form.fichero.name}}">Seleccione Documento Adjunto...</label>
+                      </div>        
+                    </div>
+                    <div class="form-group col-md-4">
+                      {{ form.published }}
+                    </div>
+                  </div>
+
+                </div>              
+              </div>
+          </form>
+
+      </div>
+    </div>
+
+{% endblock content %}
+
+{% block extrascripts %} 
+  <script>
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+  </script>
+{% endblock extrascripts %}
